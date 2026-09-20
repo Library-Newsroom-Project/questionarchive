@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Assignment Board — Sunset Park Sun</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav class="masthead">
+    <h1 class="masthead-title">The Sunset Park Sun</h1>
+    <p class="masthead-tagline">By neighbors, for neighbors</p>
+
+    <div class="masthead-photos" aria-hidden="true">
+      <img class="photo-slot photo-slot-1" src="images/issue5.png" alt="" />
+      <img class="photo-slot photo-slot-2" src="images/issue1.png" alt="" />
+    </div>
+  </nav>
+
+  <div class="main-col">
+    <header class="site-header">
+      <h2>Assignment Board</h2>
+      <p class="subhead">Explore the questions of the Sunset Park community, or filter by status/section to claim your own.</p>
+    </header>
+
+    <main>
+      <div class="controls">
+        <input id="search" type="search" placeholder="Search questions..." />
+        <div class="filter-row">
+          <select id="status-filter">
+            <option value="">All statuses</option>
+          </select>
+          <select id="section-filter">
+            <option value="">All sections</option>
+          </select>
+        </div>
+      </div>
+
+      <p id="count" class="count"></p>
+
+      <div id="cards" class="cards">
+        <p class="loading">Loading stories…</p>
+      </div>
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <p>Sunset Park Sun / Library Newsroom Project — assignment board MVP.</p>
+  </footer>
+
+  <div id="modal-overlay" class="modal-overlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-question">
+      <button id="modal-close" class="modal-close" aria-label="Close">×</button>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
