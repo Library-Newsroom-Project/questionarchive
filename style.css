@@ -5,17 +5,19 @@
   --muted: #888;
   --accent: #c1440e;
 
-  --unclaimed: #3a8a5c;
-  --claimed: #c98a1d;
+  /* Status tags carry white text; each passes WCAG AA contrast (4.5:1). */
+  --unclaimed: #2f7a4f;
+  --claimed: #9a6410;
   --answered: #3b6fb6;
   --on-hold: #8b5fbf;
-  --past: #999;
+  --past: #6b6b6b;
 }
 
 * { box-sizing: border-box; }
 
 body {
   margin: 0;
+  min-height: 100vh;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   background: linear-gradient(
     to bottom,
@@ -69,6 +71,43 @@ body {
 .masthead-photos .photo-slot-2 {
   margin-left: -30px;
   transform: rotate(4deg) translateY(70%);
+}
+
+.masthead-photos .photo-slot {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.masthead-photos:hover .photo-slot,
+.masthead-photos:focus-visible .photo-slot {
+  filter: blur(3px) brightness(0.6);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.25);
+}
+
+.masthead-photos:focus-visible {
+  outline: none;
+}
+
+/* Sits over the middle of the two covers (they're shifted down ~60%). */
+.photo-tooltip {
+  position: absolute;
+  top: 190px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 180px;
+  text-align: center;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1.3;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.masthead-photos:hover .photo-tooltip,
+.masthead-photos:focus-visible .photo-tooltip {
+  opacity: 1;
 }
 
 @media (max-width: 1200px) {
@@ -139,6 +178,17 @@ main {
   gap: 8px;
 }
 
+.control {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.control label {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
 .controls input,
 .controls select {
   font-family: inherit;
@@ -156,7 +206,7 @@ main {
   outline-offset: 1px;
 }
 
-#search {
+.control-search {
   flex: 1 1 240px;
 }
 
@@ -166,20 +216,50 @@ main {
     align-items: stretch;
   }
 
-  #search {
+  .control-search {
     flex: 1 1 auto;
   }
 
-  .filter-row select {
+  .filter-row .control {
     flex: 1 1 0;
     min-width: 0;
   }
 }
 
-.count {
+.count-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 16px;
   margin: 4px 0 16px;
+}
+
+.count {
+  margin: 0;
   font-size: 0.8rem;
   color: var(--muted);
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.link-btn:hover { color: var(--accent); }
+
+.claim-form .claim-form-note { margin: 0 0 20px; }
+
+.claim-note {
+  margin: 8px 0 0;
+  font-size: 0.95rem;
+  color: #555;
 }
 
 .cards {
@@ -292,6 +372,40 @@ main {
   font-size: 1rem;
   font-weight: 600;
   font-family: inherit;
+  border: none;
+  cursor: pointer;
+}
+
+.claim-btn:hover { background: var(--accent); }
+.claim-btn:disabled { opacity: 0.6; cursor: wait; }
+
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.pager[hidden] { display: none; }
+
+.pager-btn {
+  background: white;
+  border: 2px solid var(--line);
+  border-radius: 3px;
+  padding: 10px 16px;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.pager-btn:hover:not(:disabled) { border-color: var(--ink); }
+.pager-btn:disabled { opacity: 0.35; cursor: default; }
+
+.pager-status {
+  font-weight: 600;
 }
 
 .loading, .empty {
@@ -301,13 +415,18 @@ main {
 
 .site-footer {
   margin-top: 24px;
-  padding: 20px 16px;
+  padding: 36px 16px;
   width: 100%;
   background: rgba(255, 255, 255, 0.85);
-  font-size: 0.78rem;
-  color: #555;
+  font-size: 1.05rem;
+  color: #444;
   text-align: center;
 }
+
+.site-footer p { margin: 6px 0; }
+.site-footer .footer-lead { font-size: 1.15rem; }
+.site-footer .footer-lead { font-weight: 600; color: var(--ink); }
+.site-footer a { color: inherit; }
 
 /* Modal */
 .modal-overlay[hidden] {
@@ -372,4 +491,175 @@ main {
 #modal-body .claim-btn {
   font-size: 1.1rem;
   padding: 12px 20px;
+}
+
+/* Claim form */
+.claim-eyebrow {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--unclaimed);
+}
+
+.claim-question {
+  margin: 6px 0 8px;
+  font-size: 1.3rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.claim-form .field {
+  margin: 0 0 18px;
+  padding: 0;
+  border: none;
+}
+
+.claim-form label,
+.claim-form legend {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+  padding: 0;
+}
+
+.claim-form .optional {
+  font-weight: 400;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.claim-form input[type="text"],
+.claim-form input[type="email"],
+.claim-form textarea {
+  width: 100%;
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 10px 12px;
+  border: 2px solid var(--ink);
+  border-radius: 3px;
+  background: white;
+  color: var(--ink);
+}
+
+.claim-form textarea { resize: vertical; }
+
+.claim-form input[type="tel"] {
+  width: 100%;
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 10px 12px;
+  border: 2px solid var(--ink);
+  border-radius: 3px;
+  background: white;
+  color: var(--ink);
+}
+
+.field-hint {
+  margin: -2px 0 10px;
+  font-size: 0.92rem;
+  color: #555;
+}
+
+.contact-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.contact-row label {
+  font-weight: 400;
+  font-size: 0.92rem;
+}
+
+@media (max-width: 560px) {
+  .contact-row { grid-template-columns: 1fr; }
+}
+
+.claim-form input:focus,
+.claim-form textarea:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.claim-form .choice {
+  display: inline-flex;
+  margin: 0;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.choice input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.choice span {
+  padding: 8px 14px;
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  background: white;
+  font-size: 0.95rem;
+  transition: border-color 0.1s ease, background 0.1s ease;
+}
+
+.choice:hover span { border-color: var(--ink); }
+
+.choice input:checked + span {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: white;
+}
+
+.choice input:focus-visible + span {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.honeypot { display: none; }
+
+.form-error {
+  margin: 0 0 12px;
+  color: #b3261e;
+  font-weight: 600;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.cancel-btn {
+  background: none;
+  border: 2px solid var(--line);
+  border-radius: 3px;
+  padding: 10px 16px;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.cancel-btn:hover { border-color: var(--ink); }
+
+.claim-done .description {
+  font-size: 1.05rem;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 560px) {
+  .modal { padding: 32px 18px 20px; }
+  .form-actions { flex-direction: column-reverse; }
+  .form-actions button { width: 100%; }
 }

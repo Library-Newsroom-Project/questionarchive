@@ -11,10 +11,11 @@
     <h1 class="masthead-title">The Sunset Park Sun</h1>
     <p class="masthead-tagline">By neighbors, for neighbors</p>
 
-    <div class="masthead-photos" aria-hidden="true">
+    <a class="masthead-photos" href="https://www.librarynewsroom.org/" target="_blank" rel="noopener" aria-label="Go to the Library Newsroom website (opens in a new tab)">
       <img class="photo-slot photo-slot-1" src="images/issue5.png" alt="" />
       <img class="photo-slot photo-slot-2" src="images/issue1.png" alt="" />
-    </div>
+      <span class="photo-tooltip" aria-hidden="true">Go to the Library Newsroom Website</span>
+    </a>
   </nav>
 
   <div class="main-col">
@@ -25,27 +26,42 @@
 
     <main>
       <div class="controls">
-        <input id="search" type="search" placeholder="Search questions..." />
+        <div class="control control-search">
+          <label for="search">Search</label>
+          <input id="search" type="search" placeholder="Search questions..." />
+        </div>
         <div class="filter-row">
-          <select id="status-filter">
-            <option value="">All statuses</option>
-          </select>
-          <select id="section-filter">
-            <option value="">All sections</option>
-          </select>
+          <div class="control">
+            <label for="status-filter">Status</label>
+            <select id="status-filter">
+              <option value="">All statuses</option>
+            </select>
+          </div>
+          <div class="control">
+            <label for="section-filter">Section</label>
+            <select id="section-filter">
+              <option value="">All sections</option>
+            </select>
+          </div>
         </div>
       </div>
 
-      <p id="count" class="count"></p>
+      <div class="count-row">
+        <p id="count" class="count"></p>
+        <button id="status-shortcut" type="button" class="link-btn" hidden></button>
+      </div>
 
       <div id="cards" class="cards">
         <p class="loading">Loading stories…</p>
       </div>
+
+      <nav id="pager" class="pager" aria-label="Pages" hidden></nav>
     </main>
   </div>
 
   <footer class="site-footer">
-    <p>Sunset Park Sun / Library Newsroom Project — assignment board MVP.</p>
+    <p class="footer-lead">Questions, ideas, or trouble claiming a story? Email us at <a href="mailto:hello@librarynewsroom.org">hello@librarynewsroom.org</a>.</p>
+    <p>The Assignment Board is run by the Sunset Park Sun, a monthly paper made by Sunset Park neighbors with the <a href="https://www.librarynewsroom.org/">Library Newsroom Project</a>.</p>
   </footer>
 
   <div id="modal-overlay" class="modal-overlay" hidden>
